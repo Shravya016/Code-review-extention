@@ -1,0 +1,366 @@
+openapi: 3.1.0
+info:
+  title: CodeReview API
+  version: 0.1.0
+  description: LLM-powered automated code review platform API
+servers:
+  - url: http://localhost:8000
+paths:
+  /health:
+    get:
+      summary: Liveness
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+  /ready:
+    get:
+      summary: Readiness
+      responses:
+        "200":
+          description: Ready
+        "503":
+          description: Not ready
+  /v1/reviews/realtime:
+    post:
+      summary: Non-streaming realtime review
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RealtimeReviewRequest"
+      responses:
+        "200":
+          description: Review result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReviewResult"
+  /v1/reviews/realtime/stream:
+    post:
+      summary: SSE streaming review
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RealtimeReviewRequest"
+      responses:
+        "200":
+          description: Event stream
+          content:
+            text/event-stream:
+              schema:
+                type: string
+  /v1/reviews/pr:
+    post:
+      summary: Enqueue PR review
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PrEnqueueRequest"
+      responses:
+        "202":
+          description: Accepted
+  /v1/reviews/{review_id}:
+    get:
+      summary: Get review by id
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: review_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Review
+  /v1/webhooks/github:
+    post:
+      summary: GitHub App webhook
+      parameters:
+        - name: X-Hub-Signature-256
+          in: header
+          schema:
+            type: string
+        - name: X-GitHub-Delivery
+          in: header
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        "200":
+          description: OK
+        "401":
+          description: Invalid signature
+  /v1/memory/search:
+    post:
+      summary: Search similar historical findings
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MemorySearchRequest"
+      responses:
+        "200":
+          description: Hits
+  /v1/memory/upsert:
+    post:
+      summary: Upsert vectors for findings
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MemoryUpsertRequest"
+      responses:
+        "200":
+          description: Upserted count
+  /v1/metrics/summary:
+    get:
+      summary: Metrics summary
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MetricsSummary"
+  /v1/eval/run:
+    post:
+      summary: Run offline evaluation
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EvalRunRequest"
+      responses:
+        "202":
+          description: Enqueued
+  /v1/eval/runs:
+    get:
+      summary: List recent evaluation runs
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+      responses:
+        "200":
+          description: Evaluation runs
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EvalRunsResponse"
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+  schemas:
+    RealtimeReviewRequest:
+      type: object
+      required: [content]
+      properties:
+        org_id:
+          type: string
+          format: uuid
+        repo_id:
+          type: string
+          format: uuid
+        language:
+          type: string
+        path:
+          type: string
+        content:
+          type: string
+        diff:
+          type: string
+        model:
+          type: string
+        provider:
+          type: string
+        enable_memory:
+          type: boolean
+    Finding:
+      type: object
+      required: [id, category, severity, confidence, title, detail]
+      properties:
+        id:
+          type: string
+        category:
+          type: string
+          enum: [bug, security, quality, performance, maintainability]
+        severity:
+          type: string
+          enum: [info, low, medium, high, critical]
+        confidence:
+          type: number
+        title:
+          type: string
+        detail:
+          type: string
+        cwe_id:
+          type: string
+        owasp:
+          type: string
+        path:
+          type: string
+        start_line:
+          type: integer
+        end_line:
+          type: integer
+        code_snippet_hash:
+          type: string
+        suggested_fix:
+          type: string
+        references:
+          type: array
+          items:
+            type: string
+    ReviewResult:
+      type: object
+      properties:
+        review_id:
+          type: string
+        model:
+          type: string
+        prompt_versions:
+          type: array
+          items:
+            type: string
+        findings:
+          type: array
+          items:
+            $ref: "#/components/schemas/Finding"
+        token_usage:
+          type: object
+        latency_ms:
+          type: integer
+    MemorySearchRequest:
+      type: object
+      required: [org_id, repo_id, query]
+      properties:
+        org_id:
+          type: string
+          format: uuid
+        repo_id:
+          type: string
+          format: uuid
+        query:
+          type: string
+        top_k:
+          type: integer
+    MemoryUpsertRequest:
+      type: object
+      required: [org_id, repo_id, review_id, findings]
+      properties:
+        org_id:
+          type: string
+          format: uuid
+        repo_id:
+          type: string
+          format: uuid
+        review_id:
+          type: string
+        findings:
+          type: array
+          items:
+            $ref: "#/components/schemas/Finding"
+    MetricsSummary:
+      type: object
+      properties:
+        reviews_last_7d:
+          type: integer
+        p95_latency_ms:
+          type: number
+          nullable: true
+        avg_findings_per_review:
+          type: number
+          nullable: true
+        by_category:
+          type: object
+          additionalProperties:
+            type: integer
+    EvalRunRequest:
+      type: object
+      required: [dataset]
+      properties:
+        dataset:
+          type: string
+        model:
+          type: string
+    EvalRunRecord:
+      type: object
+      required: [id, dataset, model, metrics, created_at]
+      properties:
+        id:
+          type: string
+          format: uuid
+        dataset:
+          type: string
+        model:
+          type: string
+        metrics:
+          type: object
+          additionalProperties: true
+        created_at:
+          type: string
+          format: date-time
+    EvalRunsResponse:
+      type: object
+      properties:
+        runs:
+          type: array
+          items:
+            $ref: "#/components/schemas/EvalRunRecord"
+    PrEnqueueRequest:
+      type: object
+      required: [owner, repo, pr_number, installation_id]
+      properties:
+        owner:
+          type: string
+        repo:
+          type: string
+        pr_number:
+          type: integer
+        installation_id:
+          type: integer
+        head_sha:
+          type: string

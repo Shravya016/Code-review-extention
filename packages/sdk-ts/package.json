@@ -1,0 +1,12 @@
+{
+  "name": "@codereview/sdk-ts",
+  "version": "0.1.0",
+  "private": true,
+  "types": "src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.0"
+  }
+}

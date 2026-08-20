@@ -1,0 +1,32 @@
+                                                                  {
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Extension",
+      "type": "extensionHost",
+      "request": "launch",
+      "args": ["--extensionDevelopmentPath=${workspaceFolder}/packages/extension"],
+      "outFiles": ["${workspaceFolder}/packages/extension/out/**/*.js"],
+      "skipFiles": [
+        "<node_internals>/**",
+        "${workspaceFolder}/**/node_modules/**",
+        "**/resources/app/**",
+        "**/cursor-polyfills-remote/**"
+      ],
+      "preLaunchTask": "npm: compile - packages/extension"
+    },
+    {
+      "name": "Extension (No Build)",
+      "type": "extensionHost",
+      "request": "launch",
+      "args": ["--extensionDevelopmentPath=${workspaceFolder}/packages/extension"],
+      "outFiles": ["${workspaceFolder}/packages/extension/out/**/*.js"],
+      "skipFiles": [
+        "<node_internals>/**",
+        "${workspaceFolder}/**/node_modules/**",
+        "**/resources/app/**",
+        "**/cursor-polyfills-remote/**"
+      ]
+    }
+  ]
+}

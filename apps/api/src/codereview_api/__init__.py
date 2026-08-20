@@ -1,0 +1,1 @@
+"""CodeReview FastAPI application."""

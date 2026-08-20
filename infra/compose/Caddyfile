@@ -1,0 +1,4 @@
+# Reverse proxy in front of API (enable with: docker compose --profile tls up)
+:80 {
+  reverse_proxy api:8000
+}

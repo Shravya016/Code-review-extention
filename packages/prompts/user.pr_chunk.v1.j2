@@ -1,0 +1,13 @@
+PR: {{ pr_number }} @ {{ head_sha }}
+
+## Chunk
+Path: {{ path }}
+
+```
+{{ chunk }}
+```
+
+## RAG context (similar past issues)
+{{ rag_context }}
+
+Return JSON with top-level "findings" only.

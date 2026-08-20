@@ -1,0 +1,16 @@
+[project]
+name = "codereview-worker"
+version = "0.1.0"
+description = "Async worker for PR reviews and embeddings"
+requires-python = ">=3.12"
+dependencies = [
+  "codereview-common",
+  "alembic>=1.14",
+]
+
+[tool.uv.sources]
+codereview-common = { workspace = true }
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

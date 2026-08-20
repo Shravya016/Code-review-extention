@@ -1,0 +1,36 @@
+Language: {{ language }}
+Path: {{ path or "(unknown)" }}
+
+## Code under review
+```
+{{ content }}
+```
+
+{% if diff %}
+## Optional local diff
+```diff
+{{ diff }}
+```
+{% endif %}
+
+{% if rag_context %}
+## Similar historical findings (RAG)
+{{ rag_context }}
+{% endif %}
+
+Return ONLY JSON with a top-level "findings" array. Each finding must be actionable and tied to specific lines when possible.
+
+Strict output rules:
+- Return valid JSON only, no markdown fences.
+- If an issue is not grounded in this code, do not include it.
+- For each finding include:
+  - `title` (short, specific)
+  - `detail` (1-3 sentences max, concrete evidence)
+  - `category` in [bug, security, quality, performance, maintainability]
+  - `severity` in [info, low, medium, high, critical]
+  - `start_line` (required when applicable)
+  - `end_line` (same as start_line if single line)
+  - `suggested_fix` as CODE-ONLY replacement text for the affected line range (no prose)
+- If you cannot produce code-only replacement safely, set `suggested_fix` to null.
+- Never place explanatory text inside `suggested_fix`.
+- If no grounded findings, return: `{"findings":[]}`.

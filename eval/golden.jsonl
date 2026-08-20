@@ -1,0 +1,1 @@
+{"language":"python","path":"samples/sql_injection.py","code":"import sqlite3\n\ndef get_user(user_id):\n    conn = sqlite3.connect('db.sqlite')\n    q = \"SELECT * FROM users WHERE id = \" + user_id\n    return conn.execute(q).fetchone()\n","expected_cwe":["CWE-89"]}

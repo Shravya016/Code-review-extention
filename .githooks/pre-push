@@ -1,0 +1,21 @@
+#!/usr/bin/env sh
+set -eu
+
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+SCRIPT="$REPO_ROOT/scripts/pre_push_review.py"
+
+if [ ! -f "$SCRIPT" ]; then
+  echo "CodeReview pre-push: missing script at $SCRIPT; allowing push."
+  exit 0
+fi
+
+if command -v python3 >/dev/null 2>&1; then
+  exec python3 "$SCRIPT"
+elif command -v python >/dev/null 2>&1; then
+  exec python "$SCRIPT"
+elif command -v py >/dev/null 2>&1; then
+  exec py -3 "$SCRIPT"
+else
+  echo "CodeReview pre-push: no Python runtime found; allowing push."
+  exit 0
+fi

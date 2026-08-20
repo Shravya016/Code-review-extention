@@ -1,0 +1,14 @@
+FROM python:3.12-slim
+
+WORKDIR /app
+RUN pip install --no-cache-dir uv
+
+COPY . /app
+
+RUN cd /app && uv sync --project apps/api --no-dev
+
+ENV PYTHONPATH=/app/apps/api/src:/app/packages/python-common/src
+
+WORKDIR /app
+
+CMD ["uv", "run", "--project", "apps/api", "uvicorn", "codereview_api.main:app", "--host", "0.0.0.0", "--port", "8000"]

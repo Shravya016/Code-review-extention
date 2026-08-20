@@ -1,0 +1,253 @@
+{
+  "name": "codereview-extension",
+  "displayName": "CodeReview AI",
+  "description": "Real-time LLM code review against the CodeReview API",
+  "version": "0.1.0",
+  "publisher": "REPLACE_WITH_YOUR_PUBLISHER_ID",
+  "icon": "icon.png",
+  "license": "MIT",
+  "keywords": ["code review", "llm", "ai", "security", "static analysis", "linter"],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/REPLACE_WITH_YOUR_ORG/code-review-platform"
+  },
+  "bugs": {
+    "url": "https://github.com/REPLACE_WITH_YOUR_ORG/code-review-platform/issues"
+  },
+  "galleryBanner": {
+    "color": "#1e1e2e",
+    "theme": "dark"
+  },
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": ["Linters", "Other"],
+  "activationEvents": ["onStartupFinished"],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "codereview.reviewSelection",
+        "title": "CodeReview: Review Selection",
+        "icon": "$(search-view-icon)"
+      },
+      {
+        "command": "codereview.reviewActiveFile",
+        "title": "CodeReview: Review Active File",
+        "icon": "$(play)"
+      },
+      {
+        "command": "codereview.reviewFile",
+        "title": "CodeReview: Review File",
+        "icon": "$(search-view-icon)"
+      },
+      {
+        "command": "codereview.setApiKey",
+        "title": "CodeReview: Set API Key",
+        "icon": "$(key)"
+      },
+      {
+        "command": "codereview.clearApiKey",
+        "title": "CodeReview: Clear API Key"
+      },
+      {
+        "command": "codereview.openPanel",
+        "title": "CodeReview: Open Findings Panel",
+        "icon": "$(list-tree)"
+      },
+      {
+        "command": "codereview.openLatestFindingsFile",
+        "title": "CodeReview: Open Latest Findings File",
+        "icon": "$(go-to-file)"
+      },
+      {
+        "command": "codereview.openReportPanel",
+        "title": "CodeReview: Open Report Panel",
+        "icon": "$(preview)"
+      },
+      {
+        "command": "codereview.applySuggestedFixes",
+        "title": "CodeReview: Apply Suggested Fixes",
+        "icon": "$(check-all)"
+      },
+      {
+        "command": "codereview.fixCurrentLine",
+        "title": "CodeReview: Fix Current Line",
+        "icon": "$(wrench)"
+      },
+      {
+        "command": "codereview.applyFixFromReport",
+        "title": "CodeReview: Apply Fix From Report",
+        "icon": "$(check)"
+      },
+      {
+        "command": "codereview.generateFixFromReport",
+        "title": "CodeReview: Generate Fix From Report",
+        "icon": "$(sparkle)"
+      },
+      {
+        "command": "codereview.generateFixOnly",
+        "title": "CodeReview: Generate Fix (display only)",
+        "icon": "$(sparkle)"
+      },
+      {
+        "command": "codereview.rejectFindingFromReport",
+        "title": "CodeReview: Reject Finding From Report",
+        "icon": "$(close)"
+      },
+      {
+        "command": "codereview.applyAllFixesFromReport",
+        "title": "CodeReview: Apply All Fixes From Report",
+        "icon": "$(zap)"
+      },
+      {
+        "command": "codereview.reviewFromReport",
+        "title": "CodeReview: Review Source File From Report",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "codereview.openSourceFromReport",
+        "title": "CodeReview: Open Source File From Report",
+        "icon": "$(file-code)"
+      },
+      {
+        "command": "codereview.runReportActionAtCursor",
+        "title": "CodeReview: Run Report Action At Cursor"
+      },
+      {
+        "command": "codereview.commitAndPush",
+        "title": "CodeReview: Commit and Push Changes",
+        "icon": "$(cloud-upload)"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "codereview.fixCurrentLine",
+          "group": "navigation@100"
+        },
+        {
+          "command": "codereview.reviewActiveFile",
+          "group": "navigation@101"
+        }
+      ],
+      "editor/title": [
+        {
+          "command": "codereview.reviewActiveFile",
+          "group": "navigation@1",
+          "when": "resourceScheme == file && !(resourceFilename =~ /\\.findings\\.(md|json)$/)"
+        },
+        {
+          "command": "codereview.fixCurrentLine",
+          "group": "navigation@2",
+          "when": "resourceScheme == file && !(resourceFilename =~ /\\.findings\\.(md|json)$/)"
+        },
+        {
+          "command": "codereview.openReportPanel",
+          "group": "navigation@3",
+          "when": "resourceScheme == file && !(resourceFilename =~ /\\.findings\\.(md|json)$/)"
+        },
+        {
+          "command": "codereview.openLatestFindingsFile",
+          "group": "navigation@4",
+          "when": "resourceScheme == file && !(resourceFilename =~ /\\.findings\\.(md|json)$/)"
+        }
+      ],
+      "view/title": [
+        {
+          "command": "codereview.reviewActiveFile",
+          "group": "navigation@1",
+          "when": "view == codereview.findingsView"
+        },
+        {
+          "command": "codereview.openReportPanel",
+          "group": "navigation@2",
+          "when": "view == codereview.findingsView"
+        },
+        {
+          "command": "codereview.applySuggestedFixes",
+          "group": "navigation@3",
+          "when": "view == codereview.findingsView"
+        },
+        {
+          "command": "codereview.commitAndPush",
+          "group": "navigation@4",
+          "when": "view == codereview.findingsView"
+        },
+        {
+          "command": "codereview.setApiKey",
+          "group": "navigation@5",
+          "when": "view == codereview.findingsView"
+        }
+      ]
+    },
+    "views": {
+      "explorer": [
+        {
+          "id": "codereview.findingsView",
+          "name": "CodeReview Findings",
+          "type": "webview"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "CodeReview",
+      "properties": {
+        "codereview.apiBaseUrl": {
+          "type": "string",
+          "default": "http://localhost:8000",
+          "description": "CodeReview API base URL"
+        },
+        "codereview.model": {
+          "type": "string",
+          "default": "",
+          "description": "Optional model override"
+        },
+        "codereview.provider": {
+          "type": "string",
+          "default": "",
+          "markdownDescription": "Leave empty to use the API server's `DEFAULT_LLM_PROVIDER`. Otherwise: `openai`, `mistral`, or `ollama`."
+        },
+        "codereview.enableMemory": {
+          "type": "boolean",
+          "default": false
+        },
+        "codereview.reviewOnSave": {
+          "type": "boolean",
+          "default": false,
+          "description": "Automatically run CodeReview when a file is saved"
+        },
+        "codereview.publishDiagnostics": {
+          "type": "boolean",
+          "default": true,
+          "description": "Publish findings into the Problems panel (also enables the quick-fix lightbulb)"
+        },
+        "codereview.writeFindingsToFile": {
+          "type": "boolean",
+          "default": true,
+          "description": "Write findings to a Markdown file in the workspace"
+        },
+        "codereview.findingsOutputDir": {
+          "type": "string",
+          "default": ".codereview",
+          "description": "Relative directory where findings Markdown files are written"
+        },
+        "codereview.openFindingsFileAfterReview": {
+          "type": "boolean",
+          "default": true,
+          "description": "Open findings Markdown report after each review"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "package": "vsce package --no-dependencies"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "@types/vscode": "^1.85.0",
+    "typescript": "^5.7.0"
+  }
+}

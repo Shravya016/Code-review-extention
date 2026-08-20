@@ -1,0 +1,266 @@
+{
+  "provider": "ollama",
+  "model": "llama3:latest",
+  "cases": 20,
+  "buggy": 12,
+  "clean": 8,
+  "llm_warnings": 0,
+  "latency_ms": {
+    "mean": 40174.6,
+    "p50": 37932.0,
+    "p95": 69763,
+    "min": 29005,
+    "max": 71625
+  },
+  "detection": {
+    "system_recall": {
+      "tp": 12,
+      "n": 12,
+      "rate": "100.0%"
+    },
+    "llm_recall": {
+      "tp": 9,
+      "n": 12,
+      "rate": "75.0%"
+    },
+    "static_recall": {
+      "tp": 6,
+      "n": 12,
+      "rate": "50.0%"
+    }
+  },
+  "false_positives": {
+    "system_fp_files": {
+      "fp": 7,
+      "n": 8,
+      "rate": "87.5%"
+    },
+    "llm_fp_files": {
+      "fp": 7,
+      "n": 8,
+      "rate": "87.5%"
+    }
+  },
+  "per_case": [
+    {
+      "id": "sql_injection",
+      "label": "buggy",
+      "latency_ms": 69763,
+      "detected": true,
+      "detected_by_llm": false,
+      "detected_by_static": true,
+      "n_actionable": 1,
+      "n_actionable_llm": 0,
+      "n_actionable_static": 1
+    },
+    {
+      "id": "eval_exec",
+      "label": "buggy",
+      "latency_ms": 31568,
+      "detected": true,
+      "detected_by_llm": false,
+      "detected_by_static": true,
+      "n_actionable": 2,
+      "n_actionable_llm": 0,
+      "n_actionable_static": 2
+    },
+    {
+      "id": "hardcoded_secret",
+      "label": "buggy",
+      "latency_ms": 39774,
+      "detected": true,
+      "detected_by_llm": true,
+      "detected_by_static": true,
+      "n_actionable": 2,
+      "n_actionable_llm": 1,
+      "n_actionable_static": 1
+    },
+    {
+      "id": "modulo_by_zero",
+      "label": "buggy",
+      "latency_ms": 41160,
+      "detected": true,
+      "detected_by_llm": false,
+      "detected_by_static": true,
+      "n_actionable": 2,
+      "n_actionable_llm": 0,
+      "n_actionable_static": 2
+    },
+    {
+      "id": "bare_except",
+      "label": "buggy",
+      "latency_ms": 33901,
+      "detected": true,
+      "detected_by_llm": true,
+      "detected_by_static": true,
+      "n_actionable": 2,
+      "n_actionable_llm": 1,
+      "n_actionable_static": 1
+    },
+    {
+      "id": "input_no_cast",
+      "label": "buggy",
+      "latency_ms": 38071,
+      "detected": true,
+      "detected_by_llm": true,
+      "detected_by_static": false,
+      "n_actionable": 1,
+      "n_actionable_llm": 1,
+      "n_actionable_static": 0
+    },
+    {
+      "id": "weak_hash_md5",
+      "label": "buggy",
+      "latency_ms": 33481,
+      "detected": true,
+      "detected_by_llm": true,
+      "detected_by_static": false,
+      "n_actionable": 1,
+      "n_actionable_llm": 1,
+      "n_actionable_static": 0
+    },
+    {
+      "id": "path_traversal",
+      "label": "buggy",
+      "latency_ms": 37793,
+      "detected": true,
+      "detected_by_llm": true,
+      "detected_by_static": false,
+      "n_actionable": 1,
+      "n_actionable_llm": 1,
+      "n_actionable_static": 0
+    },
+    {
+      "id": "command_injection",
+      "label": "buggy",
+      "latency_ms": 30688,
+      "detected": true,
+      "detected_by_llm": true,
+      "detected_by_static": false,
+      "n_actionable": 1,
+      "n_actionable_llm": 1,
+      "n_actionable_static": 0
+    },
+    {
+      "id": "yaml_load",
+      "label": "buggy",
+      "latency_ms": 35714,
+      "detected": true,
+      "detected_by_llm": true,
+      "detected_by_static": false,
+      "n_actionable": 1,
+      "n_actionable_llm": 1,
+      "n_actionable_static": 0
+    },
+    {
+      "id": "js_var_hoist",
+      "label": "buggy",
+      "latency_ms": 47396,
+      "detected": true,
+      "detected_by_llm": true,
+      "detected_by_static": true,
+      "n_actionable": 3,
+      "n_actionable_llm": 2,
+      "n_actionable_static": 1
+    },
+    {
+      "id": "off_by_one",
+      "label": "buggy",
+      "latency_ms": 42086,
+      "detected": true,
+      "detected_by_llm": true,
+      "detected_by_static": false,
+      "n_actionable": 1,
+      "n_actionable_llm": 1,
+      "n_actionable_static": 0
+    },
+    {
+      "id": "clean_parameterized_sql",
+      "label": "clean",
+      "latency_ms": 40466,
+      "detected": false,
+      "detected_by_llm": false,
+      "detected_by_static": false,
+      "n_actionable": 1,
+      "n_actionable_llm": 1,
+      "n_actionable_static": 0
+    },
+    {
+      "id": "clean_validated_input",
+      "label": "clean",
+      "latency_ms": 71625,
+      "detected": false,
+      "detected_by_llm": false,
+      "detected_by_static": false,
+      "n_actionable": 2,
+      "n_actionable_llm": 2,
+      "n_actionable_static": 0
+    },
+    {
+      "id": "clean_specific_except",
+      "label": "clean",
+      "latency_ms": 38429,
+      "detected": false,
+      "detected_by_llm": false,
+      "detected_by_static": false,
+      "n_actionable": 0,
+      "n_actionable_llm": 0,
+      "n_actionable_static": 0
+    },
+    {
+      "id": "clean_simple_math",
+      "label": "clean",
+      "latency_ms": 32823,
+      "detected": false,
+      "detected_by_llm": false,
+      "detected_by_static": false,
+      "n_actionable": 1,
+      "n_actionable_llm": 1,
+      "n_actionable_static": 0
+    },
+    {
+      "id": "clean_env_secret",
+      "label": "clean",
+      "latency_ms": 36410,
+      "detected": false,
+      "detected_by_llm": false,
+      "detected_by_static": false,
+      "n_actionable": 1,
+      "n_actionable_llm": 1,
+      "n_actionable_static": 0
+    },
+    {
+      "id": "clean_js_const",
+      "label": "clean",
+      "latency_ms": 29005,
+      "detected": false,
+      "detected_by_llm": false,
+      "detected_by_static": false,
+      "n_actionable": 1,
+      "n_actionable_llm": 1,
+      "n_actionable_static": 0
+    },
+    {
+      "id": "clean_dict_lookup",
+      "label": "clean",
+      "latency_ms": 42338,
+      "detected": false,
+      "detected_by_llm": false,
+      "detected_by_static": false,
+      "n_actionable": 1,
+      "n_actionable_llm": 1,
+      "n_actionable_static": 0
+    },
+    {
+      "id": "clean_safe_hash",
+      "label": "clean",
+      "latency_ms": 31000,
+      "detected": false,
+      "detected_by_llm": false,
+      "detected_by_static": false,
+      "n_actionable": 1,
+      "n_actionable_llm": 1,
+      "n_actionable_static": 0
+    }
+  ]
+}
