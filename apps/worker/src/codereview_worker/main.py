@@ -11,8 +11,9 @@ from pathlib import Path
 import httpx
 import redis.asyncio as redis
 from sqlalchemy import select
-from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
+from sqlalchemy.ext.asyncio import async_sessionmaker
 
+from codereview_common.db.session import create_engine
 from codereview_common.db.models import EvalRun, FindingRow, Review
 from codereview_common.github.auth import get_installation_token
 from codereview_common.github.client import GitHubRestClient
@@ -239,7 +240,7 @@ async def process_eval_job(
 async def worker_loop() -> None:
     database_url = os.environ["DATABASE_URL"]
     redis_url = os.environ.get("REDIS_URL", "redis://localhost:6379/0")
-    engine = create_async_engine(database_url, echo=False)
+    engine = create_engine(database_url)
     factory = async_sessionmaker(engine, expire_on_commit=False)
     r = redis.from_url(redis_url, decode_responses=True)
 

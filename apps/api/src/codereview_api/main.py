@@ -1,10 +1,12 @@
 from __future__ import annotations
 
 from contextlib import asynccontextmanager
+from pathlib import Path
 
 import httpx
 import redis.asyncio as redis
 from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
 
 from codereview_api.routers import eval_router, health, memory, metrics, reviews, webhooks
 from codereview_api.settings import get_settings
@@ -55,6 +57,9 @@ def create_app() -> FastAPI:
     app.include_router(memory.router, prefix="/v1")
     app.include_router(metrics.router, prefix="/v1")
     app.include_router(eval_router.router, prefix="/v1")
+    dashboard = Path(__file__).resolve().parents[3] / "dashboard" / "dist"
+    if dashboard.is_dir():
+        app.mount("/", StaticFiles(directory=dashboard, html=True), name="dashboard")
     return app
 
 

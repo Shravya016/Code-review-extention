@@ -1,12 +1,16 @@
 from __future__ import annotations
 
+from sqlalchemy.engine import make_url
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
 from codereview_common.db.base import Base
 
 
 def create_engine(database_url: str):
-    return create_async_engine(database_url, echo=False)
+    url = make_url(database_url)
+    if url.drivername in {"postgres", "postgresql"}:
+        url = url.set(drivername="postgresql+asyncpg")
+    return create_async_engine(url, echo=False)
 
 
 def create_session_factory(engine):
